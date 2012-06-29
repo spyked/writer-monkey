@@ -1,10 +1,10 @@
 Writer Monkey
 =============
 
-*Writer Monkey* is an experiment attempting to generate text using Markov
-chains (resulting in what is basically a [Markov text generator] [1]. It's
-designed for purely didactic purposes, so the goal is to have a clean,
-understandable code base rather than computational efficiency. 
+*Writer Monkey* is an experiment at attempting to generate text automatically
+using Markov chains (resulting in what is basically a [Markov text generator] [1].
+It's designed for purely didactic purposes, so the goal is to have a
+clean, understandable code base rather than computational efficiency. 
 
 The final result will prove to be nothing more than a clone of [dadadodo] [2]
 with a few features for normalization of particular data such as texts written
