@@ -6,3 +6,7 @@ import Data.Map as M
 -- also, a dictionary that associates a
 -- probability to each successor
 type Chain a = M.Map a [(a, Float)]
+
+-- build a Markov chain from a key-value list
+fromList :: Ord a => [(a, [(a, Float)])] -> Chain a
+fromList = M.fromList
