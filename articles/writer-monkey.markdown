@@ -76,7 +76,7 @@ sub forma unui [dicționar](http://en.wikipedia.org/wiki/Associative_array
 coloana (sau rândul) asociată acesteia, pe care noi o vom reprezenta printr-o
 listă de asocieri stare-probabilitate.
 
-În Haskell structura de date de tip dicționare se numește
+În Haskell structura de date de tip dicționar se numește
 [Map](http://www.haskell.org/ghc/docs/6.12.2/html/libraries/containers-0.3.0.0/Data-Map.html
 "Data.Map") și se construiește pe baza a două tipuri de date, tipul asociat
 cheii și cel asociat valorii. Plecând de la cele de mai sus, putem defini un modul
