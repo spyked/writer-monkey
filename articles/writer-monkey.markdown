@@ -110,3 +110,11 @@ Data viitoare vom defini o interfață minimală pentru noua noastră structură
 date, interfață pe care mai apoi o vom folosi pentru a rula câteva exemple de
 lanțuri Markov. Cu ocazia asta vom observa și motivul pentru care meteorologii
 o dau în bară în mod sistematic.
+
+**Post Scriptum**: Atât articolele cât și codul sunt disponibile pe
+[github](https://github.com/spyked/writer-monkey "spyked/writer-monkey"), de
+unde pot fi descărcate, testate și modificate, fapt pe care autorul (anume eu)
+îl încurajează din toată inima. După încheierea procesului de dezvoltare -
+încheiere ce se va concretiza prin publicarea ultimului articol - voi accepta
+contribuții la proiect indiferent de natura acestora, cât timp le voi considera
+pozitive.
