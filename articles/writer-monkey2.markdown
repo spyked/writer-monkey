@@ -38,11 +38,11 @@ listele în cauză conțin și ele asocieri cheie-valoare (cheia fiind starea ș
 valoarea probabilitatea), ceea ce face structura noastră de date, într-un
 anumit sens, un dicționar de dicționare. Nu am folosit însă `Map` pentru lista
 de tupluri stare-probabilitate deoarece aceasta e oricum parcursă de la un cap
-la celălalt, căutarea fiind în acest caz o funcționalitate inutilă.
+la celălalt, căutarea fiind în acest caz o funcționalitate cvasi-inutilă.
 
 **Exercițiu** **(p2.1)**: Redefiniți câmpul din tipul `Chain` asociat valorilor
 dicționarului, folosind alias-uri de tip - hint: tipul `Chain` este însuși un
-alias de tip. Îmbunătățirea este una pur estetic, oferind programatorului o
+alias de tip. Îmbunătățirea este una pur estetică, oferind programatorului o
 înțelegere mai bună asupra codului.
 
 Având astfel la dispoziție o modalitate de a construi lanțuri Markov prin
@@ -101,7 +101,7 @@ stare. Pentru aceasta vom da signatura funcției `next`:
 next :: Ord a => Chain a -> a -> IO a
 </p>
 
-`next` primește ca argumente un lanț Markov și o stare din acesta și întoarce
+`next` primește ca argumente un lanț Markov și o stare a acestuia și întoarce
 următoarea stare „înfășurată” în monada `IO` ((Tipul `IO` e un tip ceva mai
 dubios din Haskell, care îi permite utilizatorului să facă tot soiul de chestii
 practice precum citirea de la tastatură, scrierea într-un fișier sau desenarea
@@ -170,9 +170,9 @@ Apoi `next'` ia lista de stări sortată și face un sampling după [algoritmul
 ruletei](http://en.wikipedia.org/wiki/Fitness_proportionate_selection "Roulette
 selection"), care ia cea mai probabilă stare și verifică dacă numărul generat
 se încadrează în aceasta. Dacă da atunci o selectează, altfel adună
-probabilitatea asociată stării-țintă eșuată și verifică pe următoarea stare ca
-probabilitate și așa mai departe. Codul pentru `next'` este dat în următorul
-paragraf:
+probabilitatea asociată stării-țintă eșuată și verifică din nou, folosind
+următoarea stare ca probabilitate și așa mai departe. Codul pentru `next'` este
+dat în următorul paragraf:
 
 <p lang="haskell">
     next' _ _ [] = error "No states available."
