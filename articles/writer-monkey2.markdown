@@ -74,6 +74,8 @@ articolul anterior, exprimabil prin graful:
 
 unde $latex A \equiv \text{Sunny}$ și $latex E \equiv \text{Rainy}$.
 
+#### ii.1. Implementarea unui simulator de procese Markov
+
 Mai departe avem nevoie de o funcție care să întoarcă lista stărilor accesibile
 dintr-o stare dată, primind un lanț Markov ca valoare. Forma funcției poate fi
 dată imediat prin folosirea funcției
@@ -189,4 +191,150 @@ normalizarea distribuției de probabilitate, această povară fiind lăsată pe
 seama utilizatorului. Altfel și `next'` e tipică programării funcționale,
 neexistând aspecte deosebite în legătură cu aceasta.
 
-TODO: conclusions and exercises
+#### ii.2. Testarea simulatorului de procese Markov
+
+Acum că avem la dispoziție implementarea unei mașini pseudo-non-deterministe
+((În virtutea faptului că algoritmii care stau la baza generării „random
+walk”-ului sunt pseudo-aleatori.)), rămâne să o testăm folosind exemplul
+ilustrat la începutul articolului. Putem face asta pe loc, încărcând modulul
+Markov.Examples în mediul interactiv
+[GHCi](http://www.haskell.org/haskellwiki/GHC/GHCi "GHC/GHCi"). În primă fază
+să testăm afișarea lanțului `weatherChain`:
+
+<p lang="haskell">
+\*Markov.Examples> weatherChain 
+fromList [(Sunny,[(Sunny,0.6),(Rainy,0.4)]),(Rainy,[(Sunny,0.7),(Rainy,0.3)])]
+</p>
+
+Lanțul arată exact cum l-am definit, deci să testăm în primă fază apelul
+`randomWalk` folosind `weatherChain` ca lanț și `Sunny` ca stare de plecare,
+limitând numărul de pași la `5`. Semnificația acestui calcul este echivalentă
+cu rezolvarea problemei „*dacă astăzi e soare, care va fi vremea peste o zi,
+două, trei sau patru?*”.
+
+<p lang="haskell">
+\*Markov.Examples> randomWalk weatherChain Sunny 5
+[Sunny,Sunny,Sunny,Rainy,Rainy]
+</p>
+
+Răspunsul pare a fi „astăzi e soare, deci posibil că peste o zi și peste două
+zile va fi soare, pe când peste trei zile și peste patru zile posibil că va
+ploua”. Acel „posibil” denotă însă o realitate posibilă și nu deterministă. În
+universul nostru simulat am colapsat o închipuită „funcție de probabilitate” -
+dat fiind faptul că semnificația lanțului Markov e aceea a unei distribuții de
+probabilitate, deci a unei superpoziții de stări. La fel ca în cazul mecanicii
+cuantice ((Cu ocazia asta încercăm să înțelegem și intuiția din spatele acestei
+ramuri cel puțin ezoterice - în sensul că-i greu de înțeles, să nu vă imaginați
+tot felul de prostii - a fizicii.)), universul nostru se află atât în starea
+„însorit” cât și în starea „ploios” până în momentul în care ajungem să îl
+observăm, moment în care ajungem fie într-una, fie în cealaltă, după cum ne-o
+fi norocul.
+
+Pentru a ilustra non-determinismul, să rulăm din nou exemplul de mai devreme:
+
+<p lang="haskell">
+\*Markov.Examples> randomWalk weatherChain Sunny 5
+[Sunny,Rainy,Sunny,Sunny,Sunny]
+</p>
+
+Iată că de data asta răspunsul a fost complet diferit: la o zi distanță plouă,
+iar la două, trei și respectiv patru zile distanță e însorit. O observație în
+acest sens ar fi aceea că probabilitatea stării următoare e strict condiționată
+de valoarea stării curente, ajungându-se efectiv la un lanț (în sensul algebric
+al cuvântului) de dependențe condiționale. Generatorul meu de evenimente
+aleatoare trebuie însă cu orice preț să respecte distribuțiile date, adică în
+medie să genereze `Sunny` cu o probabilitate de `60%` și `Rainy` cu `40%` dacă
+în momentul curent de timp sunt în `Sunny`, și respectiv `70%` și `30%` dacă
+sunt în `Rainy`.
+
+Putem să testăm imediat acest lucru: iterăm procesul de mai sus cu doi pași în
+loc de cinci și alegem mereu pasul al doilea (adică elementul cu indexul `1`
+din lista-rezultat). De exemplu:
+
+<p lang="haskell">
+\*Markov.Examples> sequence $ take 10 $ repeat $ randomWalk weatherChain Sunny 2 >>= return . (!! 1)
+[Sunny,Sunny,Rainy,Sunny,Sunny,Sunny,Sunny,Rainy,Sunny,Sunny]
+</p>
+
+apelează `randomWalk` cu argumentele de mai sus și trimite rezultatul către o
+funcție care întoarce elementul cu indexul `1` din listă. Procesul e repetat de
+zece ori, și în plus e apelată funcția
+[`sequence`](http://hackage.haskell.org/packages/archive/base/latest/doc/html/Prelude.html#v:sequence
+"Prelude: sequence"), care transformă o listă de `IO` într-un `IO` de tip
+listă.
+
+Să generăm zece mii (în loc de zece) de astfel de elemente și să numărăm câte
+zile „Sunny” și câte „Rainy” avem:
+
+<p lang="haskell">
+\*Markov.Examples> let run = sequence $ take 10000 $ repeat $ randomWalk weatherChain Sunny 2 >>= return . (!! 1)
+\*Markov.Examples> run >>= return . length . filter (== Sunny)
+5958
+\*Markov.Examples> run >>= return . length . filter (== Rainy)
+4037
+</p>
+
+Observăm deci că din `Sunny` se ajunge în aproximativ `60%` din cazuri în
+`Sunny` și în cam `40%` din cazuri în `Rainy`, deci generatorul funcționează
+cum trebuie. Analog pentru cazul în care `Rainy` este stare de plecare:
+
+<p lang="haskell">
+\*Markov.Examples> let run = sequence $ take 10000 $ repeat $ randomWalk weatherChain Rainy 2 >>= return . (!! 1)
+\*Markov.Examples> run >>= return . length . filter (== Sunny)
+7099
+\*Markov.Examples> run >>= return . length . filter (== Rainy)
+3035
+</p>
+
+#### ii.3. Concluzii. Exerciții
+
+Nu e deloc surprinzător faptul că estimatorii folosiți în practică pentru
+diverse aplicații (printre care și prognoza meteo) sunt construiți similar.
+Trebuie menționat totuși că sistemul prezentat aici e peste măsură de primitiv
+(și deci din capul locului imprecis), fiind proiectat în scopuri pur didactice.
+Construirea modelelor statistice e o disciplină în sine, foarte utilă de altfel
+în ingineria de orice fel ((Dacă doriți să aprofundați domeniul, vă recomand cu
+căldură cartea [Pattern Recognition and Machine
+Learning](http://research.microsoft.com/en-us/um/people/cmbishop/prml/ "Pattern
+Recognition and Machine Learning") a lui Christopher Bishop, o carte greoaie
+până și pentru cei familiarizați cu matematicile însă care prezintă bazele unui
+domeniu din ce în ce mai popular atât în cercetare cât și în industrie.)).
+
+Dat fiind faptul că atât limbajul de programare folosit cât și în sine
+subiectul tratat pot părea de-a dreptul neprietenoase, propun cititorului
+rezolvarea a două seturi de exerciții/probleme, dintre care prima a fost deja
+prezentată mai sus. Celelalte sunt după cum urmează:
+
+**Exerciții de programare**:
+
+* **(p2.2)**: Redefiniți tipul `Chain` folosind cuvântul cheie Haskell
+  [`newtype`](http://www.haskell.org/haskellwiki/Newtype "Haskell wiki:
+  newtype"), care e în mod clar mult mai potrivit pentru definirea tipului de
+  date care stă la baza problemei, oferind (printre altele) încapsulare.
+  Modificați restul codului conform cu noua definiție.
+* **(p2.3)**: Redefiniți funcția `accessibleStates` folosind funcția
+  [`maybe`](http://hackage.haskell.org/packages/archive/base/latest/doc/html/Prelude.html#v:maybe
+  "Prelude: maybe").
+* **(p2.4)**: Redefiniți funcțiile `next'` și `randomWalk` folosind
+  [gărzi](http://en.wikibooks.org/wiki/Haskell/Control_structures#if_and_guards_revisited
+  "If and guards revisited") în locul construcțiilor de tipul if-then-else.
+* **(p2.5)**: Reimplementați `next` folosind o altă schemă de „sampling”.
+  Explicați felul în care e afectată distribuția stărilor accesibile, dacă e
+  cazul.
+
+**Exerciții de teorie**:
+
+* **(t2.1)**: Adăugați-i o nouă stare, „Foggy”, exemplului `weatherChain`.
+  Definiți noile probabilități „după ureche”, având însă grijă ca acestea să
+  fie normalizate.
+* **(t2.2)**: Adăugați-i o nouă variabilă, „Wind”, lanțului Markov care prezice
+  vremea. Gândiți-vă la corelații între vânt și soare/vreme și alegeți
+  probabilități în concordanță cu asta. Stările posibile ale noii variabile pot
+  fi „Calm”, „Windy”, „VeryWindy” și orice altă stare care pare ok.
+* **(t2.3)**: Experimentați cu exemplele de mai sus și trageți niște concluzii
+  preliminare.
+
+Următorul articol va continua cu exemple pe temă, exemple care vor ghida
+cititorul către una din întrebările centrale care alcătuiesc problema noastră,
+aceasta fiind: cum putem construi un model (lanț Markov) care să ajute la
+generarea aleatoare de text?
