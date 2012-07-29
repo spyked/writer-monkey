@@ -25,3 +25,14 @@ count :: [Direction] -> Int
 count [] = 0
 count (L : rest) = 1 + count rest
 count (R : rest) = -1 + count rest
+
+-- "health" Markov chain
+-- age dependency?
+data Human = Healthy | Sick | Dead deriving (Eq, Ord, Show)
+
+humanChain :: Chain Human
+humanChain = fromList [
+    (Healthy, [(Healthy, 0.29), (Sick, 0.7), (Dead, 0.01)]),
+    (Sick, [(Healthy, 0.8), (Sick, 0.1), (Dead, 0.1)]),
+    (Dead, [(Healthy, 0), (Sick, 0), (Dead, 1)])
+    ]
