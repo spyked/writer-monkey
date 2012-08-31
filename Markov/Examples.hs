@@ -45,3 +45,11 @@ charChain = fromList [
     ('c', [('a', 0.4), ('b', 0.4), ('c', 0.2), ('d', 0)]),
     ('d', [('a', 0.1), ('b', 0.1), ('c', 0.1), ('d', 0.7)])
     ]
+
+-- word succession chain
+wordChain :: Chain String
+wordChain = fromList [
+    ("Ana", [("Ana", 0), ("are", 0.9), ("mere", 0.1)]),
+    ("are", [("Ana", 0.02), ("are", 0), ("mere", 0.98)]),
+    ("mere", [("Ana", 0.4), ("are", 0.5), ("mere", 0.1)])
+    ]
