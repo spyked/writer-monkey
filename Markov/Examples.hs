@@ -36,3 +36,12 @@ humanChain = fromList [
     (Sick, [(Healthy, 0.8), (Sick, 0.1), (Dead, 0.1)]),
     (Dead, [(Healthy, 0), (Sick, 0), (Dead, 1)])
     ]
+
+-- character succession example - quite abstract
+charChain :: Chain Char
+charChain = fromList [
+    ('a', [('a', 0.25), ('b', 0.25), ('c', 0.25), ('d', 0.25)]),
+    ('b', [('a', 0.2), ('b', 0), ('c', 0.8), ('d', 0)]),
+    ('c', [('a', 0.4), ('b', 0.4), ('c', 0.2), ('d', 0)]),
+    ('d', [('a', 0.1), ('b', 0.1), ('c', 0.1), ('d', 0.7)])
+    ]
