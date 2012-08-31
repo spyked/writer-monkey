@@ -180,7 +180,7 @@ Dat fiind faptul că atât limbajul de programare folosit cât și în sine subi
 
 **Exerciții de programare**:
 
-* **(p2.2)**: Redefiniți tipul `Chain` folosind cuvântul cheie Haskell [`newtype`][haskell-newtype], care e în mod clar mult mai potrivit pentru definirea tipului de date care stă la baza problemei, oferind (printre altele) încapsulare. Modificați restul codului conform cu noua definiție.
+* **(p2.2)**: Redefiniți tipul `Chain` folosind cuvântul cheie Haskell [`newtype`][haskell-newtype], care e în mod clar mult mai potrivit pentru definirea tipului de date care stă la baza problemei, oferind (printre altele) încapsulare. Modificați restul codului conform cu noua definiție. Menționați avantaje și dezavantaje ale folosirii `newtype` față de alias-uri de tip.
 * **(p2.3)**: Redefiniți funcția `accessibleStates` folosind funcția [`maybe`][haskell-prelude-maybe].
 * **(p2.4)**: Redefiniți funcțiile `next'` și `randomWalk` folosind [gărzi][haskell-guards] în locul construcțiilor de tipul if-then-else.
 * **(p2.5)**: Reimplementați `next` folosind o altă schemă de „sampling”. Explicați felul în care e afectată distribuția stărilor accesibile, dacă e cazul.
