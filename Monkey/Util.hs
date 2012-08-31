@@ -1,4 +1,4 @@
-module Text.Util where
+module Monkey.Util where
 
 -- various utility functions
 punctuation :: String

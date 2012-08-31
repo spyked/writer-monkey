@@ -1,3 +1,3 @@
-module Text.Analyzer where
+module Monkey.Analyzer where
 
 -- text analysis resulting in a Markov model
