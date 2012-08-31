@@ -76,12 +76,12 @@ Aici discuția se poate întinde asupra motivului pentru care am ales să proiec
 
 <pre lang="haskell">
 randomWalk :: Ord a => Chain a -> a -> Int -> IO [a]
-randomWalk c s n = if n <= 0
-    then return []
-    else do
-        ns <- next c s
-        rw' <- randomWalk c ns (n - 1)
-        return $ s : rw'
+randomWalk c s n = if n &lt;= 0
+	then return []
+	else do
+		ns &lt;- next c s
+		rw' &lt;- randomWalk c ns (n - 1)
+		return $ s : rw'
 </pre>
 
 Forma este tipică programării funcționale: dacă mai am de mers zero (sau mai puțini) pași înseamnă că plimbarea s-a terminat, deci întorc o listă vidă. Altfel iau următoarea stare pornind din starea curentă și merg mai departe. De întors întorc starea curentă plus restul stărilor întoarse de apelul recursiv al lui `randomWalk`.
@@ -90,7 +90,7 @@ Observați însă că am omis să dau definiția lui `next`, și am făcut-o int
 
 <pre lang="haskell">
 next c s = do
-    rn <- randomRIO (0, 1)
+    rn &lt;- randomRIO (0, 1)
     return $ next' rn 0 $ sortByProb $ accessibleStates c s
 </pre>
 
@@ -98,9 +98,9 @@ next c s = do
 
 <pre lang="haskell">
 sortByProb :: [(a, Float)] -> [(a, Float)]
-sortByProb = sortBy (.<.)
+sortByProb = sortBy (.&lt;.)
     where
-    sp .<. sp' = snd sp' `compare` snd sp
+    sp .&lt;. sp' = snd sp' `compare` snd sp
 </pre>
 
 Apoi `next'` ia lista de stări sortată și face un sampling după [algoritmul ruletei][roulette], care ia cea mai probabilă stare și verifică dacă numărul generat se încadrează în aceasta. Dacă da atunci o selectează, altfel adună probabilitatea asociată stării-țintă eșuată și verifică din nou, folosind următoarea stare ca probabilitate și așa mai departe. Codul pentru `next'` este dat în următorul paragraf:
@@ -109,7 +109,7 @@ Apoi `next'` ia lista de stări sortată și face un sampling după [algoritmul 
     next' _ _ [] = error "No states available."
     next' _ _ (sp : []) = fst sp
     next' rn acc ((s, p) : sps) = -- sample
-        if rn <= acc + p
+        if rn &lt;= acc + p
             then s
             else next' rn (acc + p) sps
 </pre>
