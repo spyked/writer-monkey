@@ -49,7 +49,9 @@ charChain = fromList [
 -- word succession chain
 wordChain :: Chain String
 wordChain = fromList [
-    ("Ana", [("Ana", 0), ("are", 0.9), ("mere", 0.1)]),
-    ("are", [("Ana", 0.02), ("are", 0), ("mere", 0.98)]),
-    ("mere", [("Ana", 0.4), ("are", 0.5), ("mere", 0.1)])
+    ("Ana", [("Ana", 0), ("Ion", 0), ("are", 0.6), ("mananca", 0.3), ("mere", 0.1)]),
+    ("Ion", [("Ana", 0), ("Ion", 0), ("are", 0.3), ("mananca", 0.68), ("mere", 0.02)]),
+    ("are", [("Ana", 0.01), ("Ion", 0.01), ("are", 0), ("mananca", 0), ("mere", 0.98)]),
+    ("mananca", [("Ana", 0.05), ("Ion", 0.05), ("are", 0), ("mananca", 0), ("mere", 0.9)]),
+    ("mere", [("Ana", 0.2), ("Ion", 0.2), ("are", 0.25), ("mananca", 0.25), ("mere", 0.1)])
     ]
