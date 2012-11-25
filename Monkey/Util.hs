@@ -1,6 +1,7 @@
 module Monkey.Util where
 
 import Monkey.Util.Romanian
+import Monkey.Util.Processing
 import qualified Data.Char as C (toLower)
 
 -- various utility functions
