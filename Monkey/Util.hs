@@ -6,7 +6,7 @@ import qualified Data.Char as C (toLower)
 
 -- various utility functions
 punctuation :: String
-punctuation = ",./;\\[]<>?:\"|{}`~!@#$%^&*()-_=+"
+punctuation = ",./;'\\[]<>?:\"|{}`~!@#$%^&*()-_=+"
 
 notContains :: Eq a => [a] -> a -> Bool
 notContains = flip notElem

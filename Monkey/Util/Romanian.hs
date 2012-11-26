@@ -13,6 +13,8 @@ roDiacriticToAscii c = case c of
     'ț' -> 't'
     'Ș' -> 'S'
     'Ț' -> 'T'
+    '„' -> ' '
+    '”' -> ' '
     _   -> c
 
 makeAsciiRo :: String -> String
