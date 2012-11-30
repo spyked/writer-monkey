@@ -83,6 +83,22 @@ catInputs paths = fmap concat $ mapM catInput paths
     -- the above definition fails to read data
     catInput = readFile
 
+-- walk from random state
+runWalk :: Chain String -> Int -> IO [String]
+runWalk model numSteps = do
+    let ss = states model
+    -- generate a random initial state
+    r <- fmap (`mod` length ss) randomIO
+    randomWalk model (ss !! r) numSteps
+
+runWalks :: Chain String -> Int -> Int -> IO [String]
+runWalks _ 0 _ = return []
+runWalks model numSteps parSize = do
+    let ns = min numSteps parSize
+    result <- runWalk model ns
+    rest <- runWalks model (numSteps - ns) parSize
+    return $ unwords result : rest
+
 main :: IO ()
 main = do
     -- parse args
@@ -90,12 +106,10 @@ main = do
     let numSteps = getNumSteps flags
         parSize = getParSize flags numSteps
         preprocess = preprocFunc flags
-    hPutStr stderr "note: option -s not supported yet\n"
     -- get preprocessed text
     text <- fmap preprocess $ catInputs inputs
     assert (length text /= 0) $ do
-    -- generate a random initial state
-    r <- fmap (`mod` length text) randomIO
-    -- analyze and run random walk
-    result <- randomWalk (analyze text) (text !! r) numSteps
-    putStrLn $ unwords result
+    -- analyze and run random walks
+    result <- runWalks (analyze text) numSteps parSize
+    -- put paragraphs
+    mapM_ (\ x -> putStrLn x >> putStrLn "") result
