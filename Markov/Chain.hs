@@ -13,6 +13,9 @@ type Chain a = M.Map a [(a, Float)]
 fromList :: Ord a => [(a, [(a, Float)])] -> Chain a
 fromList = M.fromList
 
+states :: Chain a -> [a]
+states = M.keys
+
 -- get the possible state-probability pairs from
 -- of a given state
 accessibleStates :: Ord a => Chain a -> a -> [(a, Float)]
