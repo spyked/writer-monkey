@@ -5,6 +5,7 @@ import Monkey.Analyzer
 import Monkey.Util
 import Monkey.Util.Romanian
 import Data.Maybe (fromMaybe)
+import Control.Exception.Base (assert)
 import System.Environment (getArgs)
 import System.IO
 import System.Random (randomIO)
@@ -78,9 +79,10 @@ catInputs :: [FilePath] -> IO String
 catInputs [] = hGetContents stdin
 catInputs paths = fmap concat $ mapM catInput paths
     where
-    catInput path = withFile path ReadMode hGetContents
+    -- catInput path = withFile path ReadMode hGetContents
+    -- the above definition fails to read data
+    catInput = readFile
 
--- TODO: make it possible to read from stdin
 main :: IO ()
 main = do
     -- parse args
@@ -91,6 +93,7 @@ main = do
     hPutStr stderr "note: option -s not supported yet\n"
     -- get preprocessed text
     text <- fmap preprocess $ catInputs inputs
+    assert (length text /= 0) $ do
     -- generate a random initial state
     r <- fmap (`mod` length text) randomIO
     -- analyze and run random walk
