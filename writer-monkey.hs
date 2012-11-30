@@ -74,6 +74,14 @@ preprocFunc flags = case filter isPreprocess flags of
     isPreprocess _ = False
     errMsg = "preprocess: only romanian language is supported"
 
+getOutput :: [Flag] -> IO Handle
+getOutput flags = case filter isOutput flags of
+    []  -> return stdout
+    (Output o : _)  -> openFile o WriteMode
+    where
+    isOutput (Output _) = True
+    isOutput _ = False
+
 -- concatenate all the input files in the given order
 catInputs :: [FilePath] -> IO String
 catInputs [] = hGetContents stdin
@@ -111,5 +119,7 @@ main = do
     assert (length text /= 0) $ do
     -- analyze and run random walks
     result <- runWalks (analyze text) numSteps parSize
+    out <- getOutput flags
     -- put paragraphs
-    mapM_ (\ x -> putStrLn x >> putStrLn "") result
+    mapM_ (\ x -> hPutStr out x >> hPutStr out "\n\n") result
+    hClose out
