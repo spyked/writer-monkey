@@ -49,7 +49,7 @@ weatherChain = fromList [
 
 Observăm că am definit un tip nou de date `Weather`, cu două valori posibile, `Sunny` și `Rainy`. De asemenea am definit lanțul Markov din exemplul dat în articolul anterior, exprimabil prin graful:
 
-**TODO**: link to Markov chain graph.
+<img src="http://lucian.mogosanu.ro/bricks/wp-content/uploads/2012/12/markov-weather-300x300.png" alt="lanț markov simplu" width="300" height="300" class="aligncenter size-medium wp-image-3984" />
 
 unde $latex A \equiv \text{Sunny}$ și $latex E \equiv \text{Rainy}$.
 
@@ -121,14 +121,14 @@ Parametrul `acc` e folosit pentru „incrementarea” ruletei, cu observația c�
 Acum că avem la dispoziție implementarea unei mașini pseudo-non-deterministe ((În virtutea faptului că algoritmii care stau la baza generării „random walk”-ului sunt pseudo-aleatori.)), rămâne să o testăm folosind exemplul ilustrat la începutul articolului. Putem face asta pe loc, încărcând modulul Markov.Examples în mediul interactiv [GHCi][haskell-ghci]. În primă fază să testăm afișarea lanțului `weatherChain`:
 
 <pre lang="haskell">
-\*Markov.Examples> weatherChain 
+*Markov.Examples> weatherChain
 fromList [(Sunny,[(Sunny,0.6),(Rainy,0.4)]),(Rainy,[(Sunny,0.7),(Rainy,0.3)])]
 </pre>
 
 Lanțul arată exact cum l-am definit, deci să testăm în primă fază apelul `randomWalk` folosind `weatherChain` ca lanț și `Sunny` ca stare de plecare, limitând numărul de pași la `5`. Semnificația acestui calcul este echivalentă cu rezolvarea problemei „*dacă astăzi e soare, care va fi vremea peste o zi, două, trei sau patru?*”.
 
 <pre lang="haskell">
-\*Markov.Examples> randomWalk weatherChain Sunny 5
+*Markov.Examples> randomWalk weatherChain Sunny 5
 [Sunny,Sunny,Sunny,Rainy,Rainy]
 </pre>
 
@@ -137,7 +137,7 @@ Răspunsul pare a fi „astăzi e soare, deci posibil că peste o zi și peste d
 Pentru a ilustra non-determinismul, să rulăm din nou exemplul de mai devreme:
 
 <pre lang="haskell">
-\*Markov.Examples> randomWalk weatherChain Sunny 5
+*Markov.Examples> randomWalk weatherChain Sunny 5
 [Sunny,Rainy,Sunny,Sunny,Sunny]
 </pre>
 
@@ -155,20 +155,20 @@ apelează `randomWalk` cu argumentele de mai sus și trimite rezultatul către o
 Să generăm zece mii (în loc de zece) de astfel de elemente și să numărăm câte zile „Sunny” și câte „Rainy” avem:
 
 <pre lang="haskell">
-\*Markov.Examples> let run = sequence $ take 10000 $ repeat $ randomWalk weatherChain Sunny 2 >>= return . (!! 1)
-\*Markov.Examples> run >>= return . length . filter (== Sunny)
+*Markov.Examples> let run = sequence $ take 10000 $ repeat $ randomWalk weatherChain Sunny 2 >>= return . (!! 1)
+*Markov.Examples> run >>= return . length . filter (== Sunny)
 5958
-\*Markov.Examples> run >>= return . length . filter (== Rainy)
+*Markov.Examples> run >>= return . length . filter (== Rainy)
 4037
 </pre>
 
 Observăm deci că din `Sunny` se ajunge în aproximativ `60%` din cazuri în `Sunny` și în cam `40%` din cazuri în `Rainy`, deci generatorul funcționează cum trebuie. Analog pentru cazul în care `Rainy` este stare de plecare:
 
 <pre lang="haskell">
-\*Markov.Examples> let run = sequence $ take 10000 $ repeat $ randomWalk weatherChain Rainy 2 >>= return . (!! 1)
-\*Markov.Examples> run >>= return . length . filter (== Sunny)
+*Markov.Examples> let run = sequence $ take 10000 $ repeat $ randomWalk weatherChain Rainy 2 >>= return . (!! 1)
+*Markov.Examples> run >>= return . length . filter (== Sunny)
 7099
-\*Markov.Examples> run >>= return . length . filter (== Rainy)
+*Markov.Examples> run >>= return . length . filter (== Rainy)
 3035
 </pre>
 
@@ -191,4 +191,4 @@ Dat fiind faptul că atât limbajul de programare folosit cât și în sine subi
 * **(t2.2)**: Adăugați-i o nouă variabilă, „Wind”, lanțului Markov care prezice vremea. Gândiți-vă la corelații între vânt și soare/vreme și alegeți probabilități în concordanță cu asta. Stările posibile ale noii variabile pot fi „Calm”, „Windy”, „VeryWindy” și orice altă stare care pare ok.
 * **(t2.3)**: Experimentați cu exemplele de mai sus și trageți niște concluzii preliminare.
 
-Următorul articol va continua cu exemple pe temă, exemple care vor ghida cititorul către una din întrebările centrale care alcătuiesc problema noastră, aceasta fiind: cum putem construi un model (lanț Markov) care să ajute la generarea aleatoare de text? 
+Următorul articol va continua cu exemple pe temă, exemple care vor ghida cititorul către una din întrebările centrale care alcătuiesc problema noastră, aceasta fiind: cum putem construi un model (lanț Markov) care să ajute la generarea aleatoare de text?
