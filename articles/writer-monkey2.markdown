@@ -1,7 +1,7 @@
 să scriem împreună un generator de text markov (ii)
 ===================================================
 
-[first-part]: TODO-link
+[first-part]: http://lucian.mogosanu.ro/bricks/sa-scriem-impreuna-un-generator-de-text-markov-i "să scriem împreună un generator de text markov (i)"
 [haskell-data-map]: http://www.haskell.org/ghc/docs/6.12.2/html/libraries/containers-0.3.0.0/Data-Map.html "Data.Map"
 [haskell-ord]: http://www.haskell.org/ghc/docs/6.10.2/html/libraries/base/Data-Ord.html "Data.Ord"
 [haskell-data-map-lookup]: http://www.haskell.org/ghc/docs/6.12.2/html/libraries/containers-0.3.0.0/Data-Map.html#v%3Alookup "Data.Map: lookup"
@@ -25,13 +25,13 @@ fromList :: Ord a => [(a, [(a, Float)])] -> Chain a
 fromList = M.fromList
 </pre>
 
-Signatura de tip pare un pic încurcată, o ocazie numai bună pentru a o descurca noi. În primul rând, restricția `Ord a` impune ca tipul `a` să aibă definită o relație de ordine totală ((Sau mai bine zis o așa-zisă „ordonare naturală”. Pentru mai multe detalii consultați documentația asociată [clasei de tipuri Ord][haskell-ord].)), din rațiuni de implementare a tipului de date dicționar în Haskell. În al doilea rând că lista primită ca argument e o listă de asocieri cheie-valoare, asocieri ale cărei valori sunt la rândul lor liste. Întâmplător, listele în cauză conțin și ele asocieri cheie-valoare (cheia fiind starea și valoarea probabilitatea), ceea ce face structura noastră de date, într-un anumit sens, un dicționar de dicționare. Nu am folosit însă `Map` pentru lista de tupluri stare-probabilitate deoarece aceasta e oricum parcursă de la un cap la celălalt, căutarea fiind în acest caz o funcționalitate cvasi-inutilă.
+Signatura de tip pare un pic încurcată, o ocazie numai bună pentru a o descurca noi. În primul rând, restricția `Ord a` impune ca tipul `a` să aibă definită o relație de ordine totală ((Sau mai bine zis o așa-zisă „ordonare naturală”. Pentru mai multe detalii consultați documentația asociată [clasei de tipuri Ord][haskell-ord].)), din rațiuni de implementare a tipului de date dicționar în Haskell. În al doilea rând că lista primită ca argument e o listă de asocieri cheie-valoare, asocieri ale cărei valori sunt la rândul lor liste. Întâmplător, listele în cauză conțin și ele asocieri cheie-valoare (cheia fiind starea și valoarea probabilitatea), ceea ce face din structura noastră de date, într-un anumit sens, un dicționar de dicționare. Nu am folosit însă `Map` pentru lista de tupluri stare-probabilitate deoarece aceasta e oricum parcursă de la un cap la celălalt, căutarea fiind în acest caz o funcționalitate cvasi-inutilă.
 
-**Exercițiu** **(p2.1)**: Redefiniți câmpul din tipul `Chain` asociat valorilor dicționarului, folosind alias-uri de tip - hint: tipul `Chain` este însuși un alias de tip. Îmbunătățirea este una pur estetică, oferind programatorului o înțelegere mai bună asupra codului.
+**Exercițiu** **(p2.1)**: Redefiniți câmpul din tipul `Chain` asociat valorilor dicționarului, folosind alias-uri de tip -- hint: tipul `Chain` este însuși un alias de tip. Îmbunătățirea este una pur estetică, oferind programatorului o înțelegere mai bună asupra codului.
 
 Având astfel la dispoziție o modalitate de a construi lanțuri Markov prin explicitarea nodurilor și a arcelor, să definim un modul Haskell nou în care să creăm o valoare de tipul `Chain Weather`, unde `Weather` e tipul explicitat în cele ce urmează:
 
-<pre lang="haskell" line="1">
+<pre lang="haskell">
 module Markov.Examples where
 
 import Markov.Chain
@@ -53,7 +53,7 @@ Observăm că am definit un tip nou de date `Weather`, cu două valori posibile,
 
 unde $latex A \equiv \text{Sunny}$ și $latex E \equiv \text{Rainy}$.
 
-#### ii.1. Implementarea unui simulator de procese Markov
+#### ii.1. implementarea unui simulator de procese markov
 
 Mai departe avem nevoie de o funcție care să întoarcă lista stărilor accesibile dintr-o stare dată, primind un lanț Markov ca valoare. Forma funcției poate fi dată imediat prin folosirea funcției [`lookup`][haskell-data-map-lookup]:
 
@@ -76,11 +76,11 @@ Aici discuția se poate întinde asupra motivului pentru care am ales să proiec
 
 <pre lang="haskell">
 randomWalk :: Ord a => Chain a -> a -> Int -> IO [a]
-randomWalk c s n = if n &lt;= 0
+randomWalk c s n = if n <= 0
 	then return []
 	else do
-		ns &lt;- next c s
-		rw' &lt;- randomWalk c ns (n - 1)
+		ns <- next c s
+		rw' <- randomWalk c ns (n - 1)
 		return $ s : rw'
 </pre>
 
@@ -90,7 +90,7 @@ Observați însă că am omis să dau definiția lui `next`, și am făcut-o int
 
 <pre lang="haskell">
 next c s = do
-    rn &lt;- randomRIO (0, 1)
+    rn <- randomRIO (0, 1)
     return $ next' rn 0 $ sortByProb $ accessibleStates c s
 </pre>
 
@@ -98,25 +98,25 @@ next c s = do
 
 <pre lang="haskell">
 sortByProb :: [(a, Float)] -> [(a, Float)]
-sortByProb = sortBy (.&lt;.)
+sortByProb = sortBy (.<.)
     where
-    sp .&lt;. sp' = snd sp' `compare` snd sp
+    sp .<. sp' = snd sp' `compare` snd sp
 </pre>
 
-Apoi `next'` ia lista de stări sortată și face un sampling după [algoritmul ruletei][roulette], care ia cea mai probabilă stare și verifică dacă numărul generat se încadrează în aceasta. Dacă da atunci o selectează, altfel adună probabilitatea asociată stării-țintă eșuată și verifică din nou, folosind următoarea stare ca probabilitate și așa mai departe. Codul pentru `next'` este dat în următorul paragraf:
+Apoi `next'` ia lista de stări sortată și face o eșantionare după [algoritmul ruletei][roulette], care ia cea mai probabilă stare și verifică dacă numărul generat se încadrează în aceasta. Dacă da atunci o selectează, altfel adună probabilitatea asociată stării-țintă eșuată și verifică din nou, folosind următoarea stare ca probabilitate și așa mai departe. Codul pentru `next'` este dat în următorul paragraf:
 
 <pre lang="haskell">
     next' _ _ [] = error "No states available."
     next' _ _ (sp : []) = fst sp
     next' rn acc ((s, p) : sps) = -- sample
-        if rn &lt;= acc + p
+        if rn <= acc + p
             then s
             else next' rn (acc + p) sps
 </pre>
 
 Parametrul `acc` e folosit pentru „incrementarea” ruletei, cu observația că nu se fac verificări legate de depășirea valorii 1. Cu alte cuvinte nu se verifică normalizarea distribuției de probabilitate, această povară fiind lăsată pe seama utilizatorului. Altfel și `next'` e tipică programării funcționale, neexistând aspecte deosebite în legătură cu aceasta.
 
-#### ii.2. Testarea simulatorului de procese Markov
+#### ii.2. testarea simulatorului de procese markov
 
 Acum că avem la dispoziție implementarea unei mașini pseudo-non-deterministe ((În virtutea faptului că algoritmii care stau la baza generării „random walk”-ului sunt pseudo-aleatori.)), rămâne să o testăm folosind exemplul ilustrat la începutul articolului. Putem face asta pe loc, încărcând modulul Markov.Examples în mediul interactiv [GHCi][haskell-ghci]. În primă fază să testăm afișarea lanțului `weatherChain`:
 
@@ -132,7 +132,7 @@ Lanțul arată exact cum l-am definit, deci să testăm în primă fază apelul 
 [Sunny,Sunny,Sunny,Rainy,Rainy]
 </pre>
 
-Răspunsul pare a fi „astăzi e soare, deci posibil că peste o zi și peste două zile va fi soare, pe când peste trei zile și peste patru zile posibil că va ploua”. Acel „posibil” denotă însă o realitate posibilă și nu deterministă. În universul nostru simulat am colapsat o închipuită „funcție de probabilitate” - dat fiind faptul că semnificația lanțului Markov e aceea a unei distribuții de probabilitate, deci a unei superpoziții de stări. La fel ca în cazul mecanicii cuantice ((Cu ocazia asta încercăm să înțelegem și intuiția din spatele acestei ramuri cel puțin ezoterice - în sensul că-i greu de înțeles, să nu vă imaginați tot felul de prostii - a fizicii.)), universul nostru se află atât în starea „însorit” cât și în starea „ploios” până în momentul în care ajungem să îl observăm, moment în care ajungem fie într-una, fie în cealaltă, după cum ne-o fi norocul.
+Răspunsul pare a fi „astăzi e soare, deci posibil că peste o zi și peste două zile va fi soare, pe când peste trei zile și peste patru zile posibil că va ploua”. Acel „posibil” denotă însă o realitate posibilă și nu deterministă. În universul nostru simulat am colapsat o închipuită „funcție de probabilitate”, dat fiind faptul că semnificația lanțului Markov e aceea a unei distribuții de probabilitate, deci a unei superpoziții de stări. La fel ca în cazul mecanicii cuantice ((Cu ocazia asta încercăm să înțelegem și intuiția din spatele acestei ramuri cel puțin ezoterice -- în sensul că-i greu de înțeles, să nu vă imaginați tot felul de prostii -- a fizicii.)), universul nostru se află atât în starea „însorit” cât și în starea „ploios” până în momentul în care ajungem să îl observăm, moment în care ajungem fie într-una, fie în cealaltă, după cum ne-o fi norocul.
 
 Pentru a ilustra non-determinismul, să rulăm din nou exemplul de mai devreme:
 
@@ -172,9 +172,9 @@ Observăm deci că din `Sunny` se ajunge în aproximativ `60%` din cazuri în `S
 3035
 </pre>
 
-#### ii.3. Concluzii. Exerciții
+#### ii.3. concluzii. exerciții
 
-Nu e deloc surprinzător faptul că estimatorii folosiți în practică pentru diverse aplicații (printre care și prognoza meteo) sunt construiți similar. Trebuie menționat totuși că sistemul prezentat aici e peste măsură de primitiv (și deci din capul locului imprecis), fiind proiectat în scopuri pur didactice. Construirea modelelor statistice e o disciplină în sine, foarte utilă de altfel în ingineria de orice fel ((Dacă doriți să aprofundați domeniul, vă recomand cu căldură cartea [Pattern Recognition and Machine Learning][bishop] a lui Christopher Bishop, o carte greoaie până și pentru cei familiarizați cu matematicile însă care prezintă bazele unui domeniu din ce în ce mai popular atât în cercetare cât și în industrie.)).
+Nu e deloc surprinzător faptul că estimatorii folosiți în practică pentru diverse aplicații (printre care și prognoza meteo) sunt construiți similar. Trebuie menționat totuși că sistemul prezentat aici e peste măsură de primitiv (și deci din capul locului imprecis), fiind proiectat în scopuri didactice. Construirea modelelor statistice e o disciplină în sine, foarte utilă de altfel în ingineria de orice fel ((Dacă doriți să aprofundați domeniul, vă recomand cu căldură cartea [Pattern Recognition and Machine Learning][bishop] a lui Christopher Bishop, o carte greoaie până și pentru cei familiarizați cu matematicile însă care prezintă bazele unui domeniu din ce în ce mai popular atât în cercetare cât și în industrie.)).
 
 Dat fiind faptul că atât limbajul de programare folosit cât și în sine subiectul tratat pot părea de-a dreptul neprietenoase, propun cititorului rezolvarea a două seturi de exerciții/probleme, dintre care prima a fost deja prezentată mai sus. Celelalte sunt după cum urmează:
 
