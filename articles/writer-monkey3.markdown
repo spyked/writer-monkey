@@ -42,20 +42,20 @@ count (R : rest) = -1 + count rest
 Acum nu ne rămâne decât să încărcăm modulul `Markov.Examples` în GHCi și să apelăm un `randomWalk` pe `drunkardChain`, iar rezultatul să îl trimitem către `count`. Am pus mai jos câteva exemple de rulări:
 
 <pre lang="haskell">
-	*Markov.Examples> randomWalk drunkardChain L 50 >>= return . count
-	-2
-	*Markov.Examples> randomWalk drunkardChain L 50 >>= return . count
-	-8
-	*Markov.Examples> randomWalk drunkardChain L 50 >>= return . count
-	-2
-	*Markov.Examples> randomWalk drunkardChain L 50 >>= return . count
-	10
-	*Markov.Examples> randomWalk drunkardChain L 50 >>= return . count
-	-4
-	*Markov.Examples> randomWalk drunkardChain L 50 >>= return . count
-	-6
-	*Markov.Examples> randomWalk drunkardChain L 50 >>= return . count
-	0
+*Markov.Examples> randomWalk drunkardChain L 50 >>= return . count
+-2
+*Markov.Examples> randomWalk drunkardChain L 50 >>= return . count
+-8
+*Markov.Examples> randomWalk drunkardChain L 50 >>= return . count
+-2
+*Markov.Examples> randomWalk drunkardChain L 50 >>= return . count
+10
+*Markov.Examples> randomWalk drunkardChain L 50 >>= return . count
+-4
+*Markov.Examples> randomWalk drunkardChain L 50 >>= return . count
+-6
+*Markov.Examples> randomWalk drunkardChain L 50 >>= return . count
+0
 </pre>
 
 Observăm că nu avem cum să determinăm în care stâlp sau gard va nimeri bețivul nostru după cincizeci de pași, acesta putând la fel de bine să rămână pe mijlocul drumului până atunci, sau dimpotrivă, să ajungă în casă la Maricela în timp ce stă singură și suspină, mai ceva ca în filme. Modelul poate fi deci considerat o aproximare decentă a realității.
