@@ -13,14 +13,14 @@ O abordare mai serioasă a lanțurilor Markov ar presupune parcurgerea unor subi
 
 Am plecat din capul locului de la premisa că orice generator de text Markov, sau de orice-altceva-Markov, trebuie să plece de la un model, adică de la un lanț Markov. Un exemplu clasic de lanț Markov este „mersul bețivului”, exemplu pe care îl putem ilustra începând cu formula clasică: fie un bețiv mergând pe o cărare. La fiecare moment de timp $latex t$, bețivul se poate clătina echiprobabil spre stânga sau spre dreapta cu o distanță oarecare, fixă, indiferent de sensul în care s-a mișcat la momentul anterior de timp. Să se măsoare distanța față de centrul drumului după un număr dat de pași.
 
-Reprezentarea problemei în Haskell e, la fel ca în cazul exemplului cu vremea, de-a dreptul banală. Definim o „direcție” ((De fapt sens sau poziție. Îi vom ierta însă autorului această scăpare.)) în felul următor:
+Reprezentarea problemei în Haskell este, la fel ca în cazul exemplului cu vremea, de-a dreptul banală. Definim o „direcție” ((De fapt sens sau poziție. Îi vom ierta însă autorului această scăpare.)) în felul următor:
 
 <pre lang="haskell">
 -- "drunkard" random walk
 data Direction = L | R deriving (Eq, Ord, Show)
 </pre>
 
-De asemenea distribuția de probabilitate este definită în problemă, având forma:
+De asemenea distribuția de probabilitate este definită în enunțul problemei, având forma:
 
 <pre lang="haskell">
 drunkardChain :: Chain Direction
@@ -85,7 +85,7 @@ wordChain = fromList [
 
 Mașinăria noastră, „plimbătorul aleator”, oferă în acest caz un răspuns la următoarea problemă: plecând de la cuvântul „Ana”, unde, sau mai bine zis prin ce cuvinte mă vor duce mai departe cei doisprezece pași? Alegând cu atenție probabilitățile stărilor următoare, se poate observa că concatenând apoi „drumul” putem obține un soi de înșiruire de cuvinte care chiar are sens. Rezultatele ar trebui să îl convingă până și pe cel mai sceptic dintre noi că lanțul de mai sus ne pune la dispoziție un generator de text Markov cât se poate de cinstit.
 
-Chestia asta e, dacă stăm un pic să cugetăm, de-a dreptul fascinantă, mai ales în perspectiva faptului că teoretic putem să construim un astfel de model cu sute de cuvinte și să îl lăsăm să fie parcurs pentru o perioadă oarecare de timp, de exemplu până în momentul când ajunge să scuipe întreaga operă a lui Shakespeare ((Vedeți [teorema maimuței infinite][infinite-monkey]. Nu întâmplător m-am inspirat din aceasta pentru a numi aplicația. Sigur, programul nostru își propune să producă rezultate mult mai rafinate, lucrând la nivelul cuvintelor, însă la fel de ușor putem construi un model foarte apropiat de ideea teoremei. De fapt tocmai am ajuns în punctul ăla în care putem face absolut orice ne duce mintea.)). Construirea de mână a unui lanț Markov cu sute de stări este însă dificilă pentru mintea umană, fiind în același timp foarte ușoară o mașină automată, dacă aceasta din urmă este programată de către om.
+Chestia asta e, dacă stăm un pic să cugetăm, de-a dreptul fascinantă, mai ales în perspectiva faptului că teoretic putem să construim un astfel de model cu sute de cuvinte și să îl lăsăm să fie parcurs pentru o perioadă oarecare de timp, de exemplu până în momentul când ajunge să scuipe întreaga operă a lui Shakespeare ((Vedeți [teorema maimuțelor infinite][infinite-monkey]. Nu întâmplător m-am inspirat din aceasta pentru a numi aplicația. Sigur, programul nostru își propune să producă rezultate mult mai rafinate, lucrând la nivelul cuvintelor, însă la fel de ușor putem construi un model foarte apropiat de ideea teoremei. De fapt tocmai am ajuns în punctul ăla în care putem face absolut orice ne duce mintea.)). Construirea de mână a unui lanț Markov cu sute de stări este însă dificilă pentru mintea umană, fiind în același timp foarte ușoară o mașină automată, dacă aceasta din urmă este programată de către om.
 
 O soluție la această problemă ar putea fi de exemplu construirea artificială a unui lanț Markov, plecând de la o bază de date formată din cuvinte. Dicționarele de acest fel se găsesc la tot pasul pe web, însă acestea nu ne ajută să scoatem legăturile între cuvinte, adică probabilitatea unui cuvânt de a-l urma pe altul. Ar trebui cumva să scoatem din burtă probabilități; o abordare cât de cât interesantă ar putea consta în aplicarea unor tehnici de NLP mai barbare: împărțirea cuvintelor în părți de propoziție și atribuirea probabilităților în funcție de succesiunea naturală a părților într-o propoziție dată a unei limbi date. Metoda necesită însă cunoștințe serioase de gramatică și în plus nu poate fi implementată ușor în limbi precum germana, unde de exemplu verbul mai sare din când în când la sfârșitul propoziției, cel puțin nu fără unelte specializate pentru procesarea limbajului natural.
 
