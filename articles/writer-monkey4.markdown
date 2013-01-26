@@ -1,7 +1,7 @@
 să scriem împreună un generator de text markov (iv)
 ===================================================
 
-[markov-iii]: TODO-link
+[markov-iii]: http://lucian.mogosanu.ro/bricks/sa-scriem-impreuna-un-generator-de-text-markov-iii "să scriem împreună un generator de text markov (iii)"
 [markov-ii]: http://lucian.mogosanu.ro/bricks/sa-scriem-impreuna-un-generator-de-text-markov-ii "să scriem împreună un generator de text markov (ii)"
 [lsa]: http://en.wikipedia.org/wiki/Latent_semantic_analysis "Latent semantic analysis"
 [free-monoid]: http://en.wikipedia.org/wiki/Free_monoid "Free monoid"
@@ -14,7 +14,7 @@ Am stabilit în cadrul [părții a treia][markov-iii] a seriei că urmează să 
 * O componentă care primește la intrare un model statistic, adică un lanț Markov, și întoarce un text generat aleator. Aceasta a constituit subiectul [celei de-a doua părți][markov-ii] a tutorial-ului.
 * O componentă care primește la intrare unul sau mai multe texte într-o limbă oarecare și construiește pe baza lui, respectiv a lor, lanțul Markov necesar generării de text. În cele ce urmează vom implementa această a doua parte, care este de fapt prima parte a algoritmului în totalitatea sa.
 
-Am observat de asemenea că problema construirii unui model pentru generarea propozițiilor într-o limbă oarecare este în practică intractabilă. Pe de o parte un „corpus al limbii” complet ar putea fi constituit doar din totalitatea textelor și cuvintelor scrise în limba respectivă. Pe de altă parte limba este o unealtă flexibilă, cu reguli și excepții care pot fi încălcate în diverse contexte, și a cărei formalizare este un subiect de cercetare intens la ora actuală în știința lingvisticii.
+Am observat de asemenea că problema construirii unui model pentru generarea propozițiilor într-o limbă oarecare este teoretic intractabilă. Pe de o parte un „corpus al limbii” complet ar putea fi constituit doar din totalitatea textelor și cuvintelor scrise în limba respectivă. Pe de altă parte limba este o unealtă flexibilă, cu reguli și excepții care pot fi încălcate în diverse contexte, și a cărei formalizare este un subiect de cercetare intens la ora actuală în știința lingvisticii.
 
 Prima dificultate este deci cea a timpului și spațiului necesar analizei unui set imens de date, presupunând că avem așa ceva la dispoziție ((Iar Internetul este un astfel de set de date. Apropo de asta, s-ar putea spune că Google este compania care dispune de cele mai sofisticate metode de analiză automată a datelor pe Internet, unde prin date înțelegem inclusiv text scris. Cu alte cuvinte, dacă ar fi putut exista un generator perfect de text într-o limbă anume, probabil ei ar fi fost primii care l-ar fi conceput.)). A doua dificultate este cea a utilizării uneltelor lingvistice actuale, unelte cum ar fi arborii sintactici, a căror construire și parcurgere impune costuri computaționale inerente. Din fericire această a doua dificultate este atacată în cadrul domeniului prelucrării limbajului natural, care însă le vine mai degrabă în ajutor celor ce au apucat să îi parcurgă literatura vastă ((Pomeneam la începutul seriei de utilizarea generatoarelor de text Markov pentru generarea de spam. Am observat, pe marginea comentariilor spam primite pe blog, că adepții acestui fenomen au ajuns să folosească unelte care au un grad destul de mare de sofisticare. Am primit comentarii care păreau de-a dreptul legitime, pentru a afla apoi că acele comentarii erau bucăți de text din alte articole de pe Internet, obținute automat cu ajutorul unor tehnici cum ar fi [analiza semantică latentă][lsa].)).
 
@@ -74,20 +74,20 @@ analyzeToken x = normalizeFollowers x . occurenceList . consecutivesOf x
 Având la dispoziție `analyzeToken`, putem să testăm exemplele de mai sus. Primul exemplu:
 
 <pre lang="haskell">
-\*Monkey.Analyzer> analyzeToken "Ana" ["Ana", "Ana", "Ana", "Ana", "Ana"]
+*Monkey.Analyzer> analyzeToken "Ana" ["Ana", "Ana", "Ana", "Ana", "Ana"]
 [("Ana",1.0)]
 </pre>
 
 rezultă evident într-un lanț Markov format dintr-o singură buclă. Al doilea exemplu:
 
 <pre lang="haskell">
-\*Monkey.Analyzer> analyzeToken "Ana" ["Ana", "are", "Ana", "nu"]
+*Monkey.Analyzer> analyzeToken "Ana" ["Ana", "are", "Ana", "nu"]
 [("are",0.5),("nu",0.5)]
 </pre>
 
 dă de asemenea rezultatul așteptat, o distribuție uniformă a celor două cuvinte.
 
-Dorim să mapăm operația peste toate cuvintele unice din text. În plus, dorim să împerechem fiecare cuvânt unic cu distribuția succesorilor săi și să convertim lista obținută într-un lanț Markov, folosind `fromList` definit în a doua parte.
+Dorim să mapăm operația peste toate cuvintele unice din text. În plus, dorim să împerechem fiecare cuvânt unic cu distribuția succesorilor săi și să convertim lista obținută într-un lanț Markov, folosind `fromList` definit în a doua parte a seriei.
 
 <pre lang="haskell">
 -- we assume that a "text" is actually a sequence of tokens
@@ -101,7 +101,7 @@ analyze text = fromList $ zip uniqs $ map doAnalyze uniqs
 Aplicând `analyze` -- pe care am pus-o în modulul [`Monkey.Analyzer`][monkey-analyzer] -- pe cel de-al doilea exemplu de mai devreme, obținem:
 
 <pre lang="haskell">
-\*Monkey.Analyzer> analyze ["Ana", "are", "Ana", "nu"]
+*Monkey.Analyzer> analyze ["Ana", "are", "Ana", "nu"]
 fromList [("Ana",[("are",0.5),("nu",0.5)]),("are",[("Ana",1.0)]),("nu",[("nu",1.0)])]
 </pre>
 
@@ -123,5 +123,5 @@ Firește că ce am făcut până acum e departe de a fi un program complet. O î
 
 Înainte de a încheia articolul, vă propun două probleme mai mult sau mai puțin interesante, care ar putea da naștere unor fire de dezvoltare ulterioară și eventual unor articole:
 
-* **p4.1**: Stând un pic și cugetând, mi-am dat seama că reprezentarea probabilităților ca numere în virgulă mobilă nu e așa de utilă pe cât mă așteptam. În primul rând că numerele întregi sunt exacte, în timp ce o împărțire oricât de banală în virgulă mobilă poate genera erori. În al doilea rând, distribuția numerelor fiind discretă și mai ales uniformă, nu își are rostul folosirea împărțirii adiționale mai mult decât raportarea la lungimea listei succesorilor. Sunt curios deci dacă folosirea numerelor întregi în cadrul tipului `Chain a` rezultă într-o simplificare a codului.
+* **p4.1**: Stând un pic și cugetând, mi-am dat seama că reprezentarea probabilităților ca numere în virgulă mobilă nu e așa de utilă pe cât mă așteptam. În primul rând că numerele întregi sunt exacte, în timp ce o operație de împărțire oricât de banală în virgulă mobilă poate genera erori. În al doilea rând, distribuția numerelor fiind discretă și mai ales uniformă, nu își are rostul folosirea împărțirii adiționale mai mult decât raportarea la lungimea listei succesorilor. Sunt curios deci dacă folosirea numerelor întregi în cadrul tipului `Chain a` rezultă într-o simplificare a codului.
 * **p4.2**: Construirea lanțurilor Markov folosind `fromList` servește perfect scopului pe care ni l-am propus la începutul seriei. Implementarea poate avea însă probleme de performanță datorate conversiei din liste posibil foarte mari în dicționare, ceea ce denotă în același timp o lipsă de naturalețe a abordării. Doresc astfel să speculez că dicționarele/lanțurile pot fi construite incremental, ceea ce ar reduce analiza la un simplu fold ((Adică la un [catamorfism][catamorphism], care are o semnificație algebrică foarte importantă, pe lângă faptul că ar putea îmbunătăți performanța componentei de analiză.)). Mai mult, cred că este posibilă compunerea lanțurilor Markov, deci transformarea întregii povești într-o structură de monoid. Cercetarea acestui aspect ar putea avea implicații serioase din punct de vedere teoretic, putând fi de ajutor de exemplu la examinarea calității unui model în raport cu altul și îmbunătățirea per total a generării de text, fapt care nu a fost tratat în articolele din această serie.
