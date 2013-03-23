@@ -15,14 +15,5 @@ analyze text = fromList $ zip uniqs $ map doAnalyze uniqs
 
 -- given a token and its context, construct a follower-probability
 -- model
-analyzeToken :: Eq a => a -> [a] -> [(a, Float)]
-analyzeToken x = normalizeFollowers x . occurenceList . consecutivesOf x
-
--- convert integers into probabilities
--- by default, states without followers loop into themselves (first equation)
-normalizeFollowers :: Eq a => a -> [(a, Int)] -> [(a, Float)]
-normalizeFollowers x [] = [(x,1)]
-normalizeFollowers _ fs = map (./. total) fs
-    where
-    total = fromIntegral . sum $ map snd fs
-    (x, occ) ./. n = (x, fromIntegral occ / n)
+analyzeToken :: Eq a => a -> [a] -> [(a, Int)]
+analyzeToken x = occurenceList . consecutivesOf x
