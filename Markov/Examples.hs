@@ -8,8 +8,8 @@ data Weather = Sunny | Rainy deriving (Eq, Ord, Show)
 -- a "Weather Markov chain"
 weatherChain :: Chain Weather
 weatherChain = fromList [
-    (Sunny, [(Sunny, 0.6), (Rainy, 0.4)]),
-    (Rainy, [(Sunny, 0.7), (Rainy, 0.3)])
+    (Sunny, [(Sunny, 6), (Rainy, 4)]),
+    (Rainy, [(Sunny, 7), (Rainy, 3)])
     ]
 
 -- "drunkard" random walk
@@ -17,8 +17,8 @@ data Direction = L | R deriving (Eq, Ord, Show)
 
 drunkardChain :: Chain Direction
 drunkardChain = fromList [
-    (L, [(L, 0.5), (R, 0.5)]),
-    (R, [(L, 0.5), (R, 0.5)])
+    (L, [(L, 1), (R, 1)]),
+    (R, [(L, 1), (R, 1)])
     ]
 
 count :: [Direction] -> Int
@@ -32,26 +32,26 @@ data Human = Healthy | Sick | Dead deriving (Eq, Ord, Show)
 
 humanChain :: Chain Human
 humanChain = fromList [
-    (Healthy, [(Healthy, 0.29), (Sick, 0.7), (Dead, 0.01)]),
-    (Sick, [(Healthy, 0.8), (Sick, 0.1), (Dead, 0.1)]),
-    (Dead, [(Healthy, 0), (Sick, 0), (Dead, 1)])
+    (Healthy, [(Healthy, 29), (Sick, 70), (Dead, 1)]),
+    (Sick, [(Healthy, 80), (Sick, 10), (Dead, 10)]),
+    (Dead, [(Healthy, 0), (Sick, 0), (Dead, 100)])
     ]
 
 -- character succession example - quite abstract
 charChain :: Chain Char
 charChain = fromList [
-    ('a', [('a', 0.25), ('b', 0.25), ('c', 0.25), ('d', 0.25)]),
-    ('b', [('a', 0.2), ('b', 0), ('c', 0.8), ('d', 0)]),
-    ('c', [('a', 0.4), ('b', 0.4), ('c', 0.2), ('d', 0)]),
-    ('d', [('a', 0.1), ('b', 0.1), ('c', 0.1), ('d', 0.7)])
+    ('a', [('a', 25), ('b', 25), ('c', 25), ('d', 25)]),
+    ('b', [('a', 20), ('b', 0), ('c', 80), ('d', 0)]),
+    ('c', [('a', 40), ('b', 40), ('c', 20), ('d', 0)]),
+    ('d', [('a', 10), ('b', 10), ('c', 10), ('d', 70)])
     ]
 
 -- word succession chain
 wordChain :: Chain String
 wordChain = fromList [
-    ("Ana", [("Ana", 0), ("Ion", 0), ("are", 0.6), ("mananca", 0.3), ("mere", 0.1)]),
-    ("Ion", [("Ana", 0), ("Ion", 0), ("are", 0.3), ("mananca", 0.68), ("mere", 0.02)]),
-    ("are", [("Ana", 0.01), ("Ion", 0.01), ("are", 0), ("mananca", 0), ("mere", 0.98)]),
-    ("mananca", [("Ana", 0.05), ("Ion", 0.05), ("are", 0), ("mananca", 0), ("mere", 0.9)]),
-    ("mere", [("Ana", 0.2), ("Ion", 0.2), ("are", 0.25), ("mananca", 0.25), ("mere", 0.1)])
+    ("Ana", [("Ana", 0), ("Ion", 0), ("are", 60), ("mananca", 30), ("mere", 10)]),
+    ("Ion", [("Ana", 0), ("Ion", 0), ("are", 30), ("mananca", 68), ("mere", 2)]),
+    ("are", [("Ana", 1), ("Ion", 1), ("are", 0), ("mananca", 0), ("mere", 98)]),
+    ("mananca", [("Ana", 5), ("Ion", 5), ("are", 0), ("mananca", 0), ("mere", 90)]),
+    ("mere", [("Ana", 20), ("Ion", 20), ("are", 25), ("mananca", 25), ("mere", 10)])
     ]
