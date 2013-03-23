@@ -1,6 +1,6 @@
 module Markov.Chain where
 
-import Data.Map as M
+import qualified Data.Map as M
 import System.Random (randomRIO)
 import Data.List (sortBy)
 
