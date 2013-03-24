@@ -1,6 +1,7 @@
 module Main where
 
-import Markov.Chain
+import Markov.Chain (Chain, states)
+import Markov.Walker
 import Monkey.Analyzer
 import Monkey.Util
 import Monkey.Util.Romanian
@@ -94,6 +95,7 @@ catInputs paths = fmap concat $ mapM catInput paths
 -- walk from random state
 runWalk :: Chain String -> Int -> IO [String]
 runWalk model numSteps = do
+    -- TODO: move sampling to Markov.Walker
     let ss = states model
     -- generate a random initial state
     r <- fmap (`mod` length ss) randomIO
