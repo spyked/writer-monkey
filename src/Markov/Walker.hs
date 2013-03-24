@@ -24,7 +24,7 @@ randomWalk c s n = if n <= 0
 -- states
 next :: Ord a => Chain a -> a -> IO (Maybe a)
 next c s = do
-    let accs = distribToAscList $ distributionOf c s
+    let accs = distribToAscList $ distribOf c s
     rn <- randomRIO (0, sumProb accs)
     return $ next' rn 0 accs
     where

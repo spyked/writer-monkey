@@ -17,11 +17,14 @@ fromList = Chain . M.fromList . map (second M.fromList)
 states :: Chain a -> [a]
 states = M.keys . unChain
 
-distributions :: Chain a -> [Distribution a]
-distributions = M.elems . unChain
+distribs :: Chain a -> [Distribution a]
+distribs = M.elems . unChain
 
 emptyDistrib :: Distribution a
 emptyDistrib = M.empty
+
+singletonDistrib :: a -> Distribution a
+singletonDistrib = flip M.singleton $ 1
 
 emptyChain :: Chain a
 emptyChain = Chain M.empty
@@ -31,7 +34,7 @@ distribToAscList = M.toAscList
 
 -- get the possible state-probability pairs from
 -- of a given state
-distributionOf :: Ord a => Chain a -> a -> Distribution a
-distributionOf c s = case M.lookup s (unChain c) of
+distribOf :: Ord a => Chain a -> a -> Distribution a
+distribOf c s = case M.lookup s (unChain c) of
     Just accs -> accs
     Nothing -> emptyDistrib
