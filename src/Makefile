@@ -1,4 +1,4 @@
-BASENAME = writer-monkey
+BASENAME = Main
 
 .PHONY: all clean
 
