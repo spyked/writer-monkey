@@ -15,6 +15,12 @@ newtype Chain a = Chain { unChain :: M.Map a (Distribution a) }
 fromList :: Ord a => [(a, [(a, Int)])] -> Chain a
 fromList = Chain . M.fromList . map (second M.fromList)
 
+fromDistrib :: Ord a => [(a, Distribution a)] -> Chain a
+fromDistrib = Chain . M.fromList
+
+distribFromList :: Ord a => [(a, Int)] -> Distribution a
+distribFromList = M.fromList
+
 states :: Chain a -> [a]
 states = M.keys . unChain
 
@@ -29,6 +35,9 @@ singletonDistrib = flip M.singleton $ 1
 
 emptyChain :: Chain a
 emptyChain = Chain M.empty
+
+singletonChain :: a -> Distribution a -> Chain a
+singletonChain a = Chain . M.singleton a
 
 distribToAscList :: Distribution a -> [(a, Int)]
 distribToAscList = M.toAscList
