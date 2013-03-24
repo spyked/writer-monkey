@@ -1,7 +1,6 @@
 module Markov.Chain where
 
 import qualified Data.Map as M
-import Data.List (sortBy)
 import Control.Arrow (second)
 
 -- Markov Chain: DAG with probabilities on arcs
@@ -21,19 +20,18 @@ states = M.keys . unChain
 distributions :: Chain a -> [Distribution a]
 distributions = M.elems . unChain
 
+emptyDistrib :: Distribution a
+emptyDistrib = M.empty
+
+emptyChain :: Chain a
+emptyChain = Chain M.empty
+
+distribToAscList :: Distribution a -> [(a, Int)]
+distribToAscList = M.toAscList
+
 -- get the possible state-probability pairs from
 -- of a given state
-accessibleStates :: Ord a => Chain a -> a -> [(a, Int)]
-accessibleStates c s = case M.lookup s (unChain c) of
-    Just accs -> M.toList accs -- TODO: use Distribution
-    Nothing -> []
-
--- sort a list of state-probability pairs by probabilities
-sortByProb :: [(a, Int)] -> [(a, Int)]
-sortByProb = sortBy (.<.)
-    where
-    sp .<. sp' = snd sp' `compare` snd sp
-
--- get the sum probability of a list of accessible states
-sumProb :: [(a, Int)] -> Int
-sumProb = sum . map snd
+distributionOf :: Ord a => Chain a -> a -> Distribution a
+distributionOf c s = case M.lookup s (unChain c) of
+    Just accs -> accs
+    Nothing -> emptyDistrib
