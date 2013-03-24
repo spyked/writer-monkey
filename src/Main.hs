@@ -1,10 +1,12 @@
 module Main where
 
-import Markov.Chain (Chain, states)
+import Markov.Chain (Chain, states, unChain)
 import Markov.Walker
 import Monkey.Analyzer
 import Monkey.Util
 import Monkey.Util.Romanian
+
+import Data.Map (difference)
 import Data.Maybe (fromMaybe)
 import Control.Exception.Base (assert)
 import System.Environment (getArgs)
@@ -120,6 +122,10 @@ main = do
     text <- fmap preprocess $ catInputs inputs
     assert (length text /= 0) $ do
     -- analyze and run random walks
+    -- TODO: cleanup testing stuff
+    let t = analyze text
+        t' = analyze' text
+    print $ unChain t `difference` unChain t'
     result <- runWalks (analyze text) numSteps parSize
     out <- getOutput flags
     -- put paragraphs

@@ -19,13 +19,7 @@ consecutivesOf x (x' : x'' : xs)
     | otherwise = consecutivesOf x (x'' : xs)
 consecutivesOf _ _ = []
 
--- assumes elements of second argument are unique
--- this shouldn't be needed, as states with zero
--- probability are theoretically unreachable.
-{-
-addNonConsecutives :: Eq a => [(a, Int)] -> [a] -> [(a, Int)]
-addNonConsecutives fs all = fs ++ map addZero (all \\ fsts)
-    where
-    fsts = map fst fs
-    addZero x = (x, 0)
--}
+-- group consecutive elements into pairs
+groupConsecutives :: [a] -> [(a, a)]
+groupConsecutives (x : x' : xs) = (x, x') : groupConsecutives (x' : xs)
+groupConsecutives _ = []
