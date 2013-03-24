@@ -7,7 +7,7 @@ countOccurences :: Eq a => a -> [a] -> Int
 countOccurences x = length . filter (== x)
 
 occurenceList :: Eq a => [a] -> [(a, Int)]
-occurenceList xs = zip uniqs $ map (flip countOccurences $ xs) uniqs
+occurenceList xs = zip uniqs $ map (`countOccurences` xs) uniqs
     where
     uniqs = nub xs
 

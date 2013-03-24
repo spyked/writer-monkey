@@ -1,6 +1,7 @@
 module Markov.Chain where
 
 import qualified Data.Map as M
+import Data.Maybe (fromMaybe)
 import Data.Monoid
 import Control.Arrow (second)
 
@@ -31,7 +32,7 @@ emptyDistrib :: Distribution a
 emptyDistrib = M.empty
 
 singletonDistrib :: a -> Distribution a
-singletonDistrib = flip M.singleton $ 1
+singletonDistrib = flip M.singleton 1
 
 emptyChain :: Chain a
 emptyChain = Chain M.empty
@@ -45,9 +46,7 @@ distribToAscList = M.toAscList
 -- get the possible state-probability pairs from
 -- of a given state
 distribOf :: Ord a => Chain a -> a -> Distribution a
-distribOf c s = case M.lookup s (unChain c) of
-    Just accs -> accs
-    Nothing -> emptyDistrib
+distribOf c s = fromMaybe emptyDistrib $ M.lookup s (unChain c)
 
 -- add state to a distribution
 addState :: Ord a => Distribution a -> a -> Distribution a

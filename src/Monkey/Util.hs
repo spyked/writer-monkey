@@ -15,7 +15,7 @@ stripPunctuation :: String -> String
 stripPunctuation = filter $ notContains punctuation
 
 wsPunctuation :: String -> String
-wsPunctuation = map $ \ c -> if elem c punctuation then ' ' else c
+wsPunctuation = map $ \ c -> if c `elem` punctuation then ' ' else c
 
 toLower :: String -> String
 toLower = map C.toLower

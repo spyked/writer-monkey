@@ -1,10 +1,9 @@
-module Monkey.Analyzer (analyze, analyze') where
+module Monkey.Analyzer (analyze) where
 
 -- text analysis resulting in a Markov model
 
 import Monkey.Util.Processing
 import Markov.Chain
-import Data.List (nub)
 import Data.Monoid (mappend)
 
 -- we assume that a "text" is actually a sequence of tokens
@@ -17,6 +16,7 @@ analyze = foldl mappend emptyChain
 sampleConsecutive :: a -> a -> Chain a
 sampleConsecutive t1 t2 = singletonChain t1 $ singletonDistrib t2
 
+{-
 analyze' text = fromList $ zip uniqs $ map doAnalyze uniqs
     where
     uniqs = nub text
@@ -26,3 +26,4 @@ analyze' text = fromList $ zip uniqs $ map doAnalyze uniqs
 -- model
 analyzeToken :: Eq a => a -> [a] -> [(a, Int)]
 analyzeToken x = occurenceList . consecutivesOf x
+-}
