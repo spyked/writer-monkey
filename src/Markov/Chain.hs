@@ -1,6 +1,7 @@
 module Markov.Chain where
 
 import qualified Data.Map as M
+import Data.Monoid
 import Control.Arrow (second)
 
 -- Markov Chain: DAG with probabilities on arcs
@@ -38,3 +39,16 @@ distribOf :: Ord a => Chain a -> a -> Distribution a
 distribOf c s = case M.lookup s (unChain c) of
     Just accs -> accs
     Nothing -> emptyDistrib
+
+-- add state to a distribution
+addState :: Ord a => Distribution a -> a -> Distribution a
+addState dist s = M.insertWith (+) s 1 dist
+
+-- append two distributions
+appendDistribs :: Ord a => Distribution a -> Distribution a -> Distribution a
+appendDistribs = M.unionWith (+)
+
+-- Chains are Monoids
+instance Ord a => Monoid (Chain a) where
+    mempty = emptyChain
+    mappend (Chain m1) (Chain m2) = Chain $ M.unionWith appendDistribs m1 m2
