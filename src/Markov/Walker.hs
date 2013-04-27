@@ -14,7 +14,7 @@ randomWalk c s n = if n <= 0
     else do
         mns <- next c s
         case mns of
-            Nothing -> return []
+            Nothing -> return [s]
             Just ns -> do
                 rw' <- randomWalk c ns (n - 1)
                 return $ s : rw'
