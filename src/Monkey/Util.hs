@@ -6,7 +6,10 @@ import qualified Data.Char as C (toLower)
 
 -- various utility functions
 punctuation :: String
-punctuation = ",/;'\\[]<>?:\"|{}`~!@#$%^&*()-_=+"
+punctuation = ",/'\\[]<>\"|{}`~!@#$%^&*()-_=+"
+
+endPunctuation :: String
+endPunctuation = ".?:;"
 
 notContains :: Eq a => [a] -> a -> Bool
 notContains = flip notElem
@@ -20,13 +23,17 @@ wsPunctuation = map $ \ c -> if c `elem` punctuation then ' ' else c
 toLower :: String -> String
 toLower = map C.toLower
 
+endOfSentence :: Char -> Bool
+endOfSentence = (`elem` endPunctuation)
+
 -- return rest as second element of pair, discard period
 takeSentence :: String -> (String, String)
-takeSentence s = (takeWhile (/= '.') s, tryTail $ dropWhile (/= '.') s)
+takeSentence s = (takeWhile (not . endOfSentence) s,
+                  tryTail $ dropWhile (not . endOfSentence) s)
     where
     tryTail [] = []
-    tryTail ('.' : rest) = rest
-    tryTail _ = error "Shouldn't get here"
+    tryTail (c : rest) = if endOfSentence c
+        then rest else error "Shouldn't get here"
 
 sentences :: String -> [String]
 sentences ss = case takeSentence ss of
