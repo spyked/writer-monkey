@@ -19,3 +19,16 @@ wsPunctuation = map $ \ c -> if c `elem` punctuation then ' ' else c
 
 toLower :: String -> String
 toLower = map C.toLower
+
+-- return rest as second element of pair, discard period
+takeSentence :: String -> (String, String)
+takeSentence s = (takeWhile (/= '.') s, tryTail $ dropWhile (/= '.') s)
+    where
+    tryTail [] = []
+    tryTail ('.' : rest) = rest
+    tryTail _ = error "Shouldn't get here"
+
+sentences :: String -> [String]
+sentences ss = case takeSentence ss of
+    (s', []) -> [s']
+    (s', ss') -> s' : sentences ss'
