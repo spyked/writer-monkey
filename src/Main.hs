@@ -1,12 +1,13 @@
 module Main where
 
-import Markov.Chain (Chain, states, unChain)
+import Markov.Chain (Chain, states, unChain, emptyChain)
 import Markov.Walker
 import Monkey.Analyzer
 import Monkey.Util
 import Monkey.Util.Romanian
 
 import Data.Maybe (fromMaybe)
+import Data.Monoid (mappend)
 import Control.Exception.Base (assert)
 import System.Environment (getArgs)
 import System.IO
@@ -64,10 +65,8 @@ getParSize flags textsize = case filter isParSize flags of
     isParSize (ParSize _) = True
     isParSize _ = False
 
-preprocFunc :: [Flag] -> String -> [String]
-preprocFunc _ = words . preprocPunct
-    where
-    preprocPunct = toLower . wsPunctuation
+preprocFunc :: [Flag] -> String -> String
+preprocFunc _ = toLower . wsPunctuation
 
 getOutput :: [Flag] -> IO Handle
 getOutput flags = case filter isOutput flags of
@@ -114,7 +113,9 @@ main = do
     text <- fmap preprocess $ catInputs inputs
     assert (length text /= 0) $ do
     -- analyze and run random walks
-    result <- runWalks (analyze text) numSteps parSize
+    let tokens = map words $ sentences text
+        model = foldl mappend emptyChain $ map analyze tokens
+    result <- runWalks model numSteps parSize
     out <- getOutput flags
     -- put paragraphs
     mapM_ (\ x -> hPutStr out x >> hPutStr out "\n\n") result
