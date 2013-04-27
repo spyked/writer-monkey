@@ -65,16 +65,9 @@ getParSize flags textsize = case filter isParSize flags of
     isParSize _ = False
 
 preprocFunc :: [Flag] -> String -> [String]
-preprocFunc flags = case filter isPreprocess flags of
-    []                      -> words
-    (Preprocess "" : _)     -> words . preprocPunct
-    (Preprocess "ro" : _)   -> words . preprocPunct . makeAsciiRo
-    _                       -> error errMsg
+preprocFunc _ = words . preprocPunct
     where
     preprocPunct = toLower . wsPunctuation
-    isPreprocess (Preprocess _) = True
-    isPreprocess _ = False
-    errMsg = "preprocess: only romanian language is supported"
 
 getOutput :: [Flag] -> IO Handle
 getOutput flags = case filter isOutput flags of
