@@ -1,7 +1,7 @@
 module Main where
 
 import Markov.Chain (Chain, states, unChain, emptyChain)
-import Markov.Walker
+import Markov.Process
 import Monkey.Analyzer
 import Monkey.Util
 import Monkey.Util.Romanian

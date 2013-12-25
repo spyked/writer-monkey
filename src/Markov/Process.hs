@@ -1,4 +1,4 @@
-module Markov.Walker (randomWalk) where
+module Markov.Process (randomWalk) where
 
 import Markov.Chain
 
